@@ -1,11 +1,11 @@
 package main
 
-import(
+import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
-	"errors"
 )
 
 type LocationData struct {
@@ -19,9 +19,7 @@ type Results struct {
 	URL  string `json:"url"`
 }
 
-
-
-func mapF(cfg *config) error {
+func commandMap(cfg *config) error {
 	url := cfg.mapURLF
 
 	locobj,err := LocationReader(url)
@@ -36,7 +34,7 @@ func mapF(cfg *config) error {
 	return nil
 }
 
-func mapB(cfg *config) error{
+func commandMapB(cfg *config) error{
 	url := cfg.mapURLB
 
 	locobj,err := LocationReader(url)

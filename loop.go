@@ -2,12 +2,11 @@ package main
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"os"
-	"errors"
 	"strings"
-	// "github.com/mtslzr/pokeapi-go"
-	// "net/http"
+	"github.com/crayboi420/pokdexcli/internal/pokecache"
 )
 
 func Mainloop(){
@@ -18,6 +17,7 @@ func Mainloop(){
 		commandMap: getCommands(),
 		}
 	for {
+		PrintLol()
 		fmt.Printf("pokedex > ")
 		text,ok := reader.ReadString('\n')
 		if ok!=nil{
@@ -57,12 +57,12 @@ func getCommands() map[string]command{
 					"map":{
 						name: "map",
 						description: "Displays the next 20 locations of the map",
-						callback: mapF,
+						callback: commandMap,
 					},
 					"mapb":{
 						name: "mapb",
 						description: "Displays the last 20 locations of the map",
-						callback: mapB,
+						callback: commandMapB,
 					},
 				}
 }
