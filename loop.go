@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"errors"
+	"strings"
 	// "github.com/mtslzr/pokeapi-go"
 	// "net/http"
 )
@@ -12,30 +13,9 @@ import (
 func Mainloop(){
 	reader := bufio.NewReader(os.Stdin)
 	cfg := config{
-		mapApiID: 1,
-		mapApiIDNext: 20,
-		commandMap: map[string]command{
-				"help": {
-					name:        "help",
-					description: "Displays a help message",
-					callback:    commandHelp,
-				},
-				"exit": {
-					name:        "exit",
-					description: "Exit the Pokedex",
-					callback:    commandExit,
-				},
-				"map":{
-					name: "map",
-					description: "Displays the next 20 locations of the map",
-					callback: mapF,
-				},
-				"mapb":{
-					name: "mapb",
-					description: "Displays the last 20 locations of the map",
-					callback: mapB,
-				},
-			},
+		mapURLF: "https://pokeapi.co/api/v2/location-area/",
+		mapURLB: "https://pokeapi.co/api/v2/location-area/",
+		commandMap: getCommands(),
 		}
 	for {
 		fmt.Printf("pokedex > ")
@@ -44,13 +24,17 @@ func Mainloop(){
 			fmt.Println("Reading the string failed")
 			break
 		}
-
-		comm,ok := Parsetext(text[:len(text)-1],&cfg)
+		if len(text)==1 {continue}
+		text = text[:len(text)-1]
+ 		comm,ok := Parsetext(strings.ToLower(text),&cfg)
 		if ok!=nil {
 			continue
 		}
-		
-		if comm.callback(&cfg)!=nil{
+
+		err:=comm.callback(&cfg)
+
+		if err!=nil{
+			fmt.Println(err)
 			continue
 		}
 
@@ -58,8 +42,33 @@ func Mainloop(){
 	}
 }
 
+func getCommands() map[string]command{
+	return map[string]command{
+					"help": {
+						name:        "help",
+						description: "Displays a help message",
+						callback:    commandHelp,
+					},
+					"exit": {
+						name:        "exit",
+						description: "Exit the Pokedex",
+						callback:    commandExit,
+					},
+					"map":{
+						name: "map",
+						description: "Displays the next 20 locations of the map",
+						callback: mapF,
+					},
+					"mapb":{
+						name: "mapb",
+						description: "Displays the last 20 locations of the map",
+						callback: mapB,
+					},
+				}
+}
+
 type config struct{
-	mapApiID, mapApiIDNext int
+	mapURLF,mapURLB string
 	commandMap map[string]command
 }
 
@@ -72,7 +81,7 @@ func Parsetext(s string, cfg *config) (command,error){
 	
 	comm,ok := cfg.commandMap[s]
 	if !ok{
-		fmt.Println("Not a valid command")
+		fmt.Println(s,": not a valid command")
 		return command{},errors.New("not in the list of commands")
 	}
 	return comm,nil
@@ -80,20 +89,14 @@ func Parsetext(s string, cfg *config) (command,error){
 
 func commandHelp(cfg *config) error{
 	fmt.Println("\nPokedexCLI is a tool that will function as a pokedex you can use in the command line.")
-	fmt.Println("The commands you are allowed to use are:\n")
-	for key,value :=range cfg.commandMap{
-		fmt.Println(key,": ",value.description)
-		// fmt.Println(value.description)
+	fmt.Println("The commands you are allowed to use are:")
+	fmt.Println()
+	for _,value :=range cfg.commandMap{
+		fmt.Printf("- %s : %s\n",value.name,value.description)
 	}
 	return nil
 }
 func commandExit(cfg *config) error{
 	os.Exit(0)
-	return nil
-}
-func mapF(cfg *config) error {
-	return nil
-}
-func mapB(cfg *config) error{
 	return nil
 }
