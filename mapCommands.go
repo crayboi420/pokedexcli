@@ -22,48 +22,66 @@ type Results struct {
 func commandMap(cfg *config) error {
 	url := cfg.mapURLF
 
-	locobj,err := LocationReader(url)
-	if err!=nil {return errors.New("no locations after this")}
+	locobj, err := LocationReader(cfg, url)
+
+	if err != nil {
+		return errors.New("no locations after this")
+	}
 
 	cfg.mapURLF = locobj.Next
 	cfg.mapURLB = locobj.Previous
-	
-	fmt.Println("Printing the next 20 locations...",url)
+
+	fmt.Println("Printing the next 20 locations...")
 	LocationPrinter(&locobj)
-	
+
 	return nil
 }
 
-func commandMapB(cfg *config) error{
+func commandMapB(cfg *config) error {
 	url := cfg.mapURLB
 
-	locobj,err := LocationReader(url)
-	if err!=nil {
+	locobj, err := LocationReader(cfg, url)
+
+	if err != nil {
 		return errors.New("no locations before this")
 	}
 
 	cfg.mapURLF = locobj.Next
 	cfg.mapURLB = locobj.Previous
-	
-	fmt.Println("\nPrinting the last 20 locations...",url)
+
+	fmt.Println("\nPrinting the last 20 locations...")
 	LocationPrinter(&locobj)
 
 	return nil
 }
 
-func LocationReader(url string) (LocationData,error) {
-	res,err := http.Get(url)
+func LocationReader(cfg *config, url string) (LocationData, error) {
+
 	locobj := LocationData{}
-	if err!=nil {return LocationData{},err}
-	txt,_ := io.ReadAll(res.Body)
-	res.Body.Close()
-	json.Unmarshal([]byte(txt),&locobj)
-	return locobj,nil
+	var data []byte
+
+	if val, is := cfg.ch.Get(url); is {
+		data = val
+		// fmt.Println("Got from map")
+	} else {
+		res, err := http.Get(url)
+		if err != nil {
+			return LocationData{}, err
+		}
+		txt, _ := io.ReadAll(res.Body)
+		res.Body.Close()
+		data = []byte(txt)
+
+		cfg.ch.Add(url, data)
+		// fmt.Println("Added to map")
+	}
+	json.Unmarshal(data, &locobj)
+	return locobj, nil
 }
 
-func LocationPrinter(locobj *LocationData){
-	
-	for _,value :=range locobj.Results{
+func LocationPrinter(locobj *LocationData) {
+
+	for _, value := range locobj.Results {
 		fmt.Println()
 		fmt.Print(value.Name)
 	}
