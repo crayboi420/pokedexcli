@@ -313,7 +313,7 @@ func commandCatch(args []string, cfg *config) error {
 
 	if caught {
 		fmt.Println("Caught " + args[0] + "!")
-		cfg.pokemons[args[0]] = catchobj
+		cfg.pokedex[args[0]] = catchobj
 	} else {
 		fmt.Println("Couldn't catch " + args[0])
 	}

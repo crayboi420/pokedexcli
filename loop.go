@@ -15,7 +15,7 @@ type config struct {
 	mapURLF, mapURLB string
 	commandMap       map[string]command
 	ch               pokecache.Cache
-	pokemons         map[string]CatchData
+	pokedex          map[string]CatchData
 }
 
 type command struct {
@@ -52,8 +52,18 @@ func getCommands() map[string]command {
 		},
 		"catch": {
 			name:        "catch",
-			description: "Tries to catch the pokemon",
+			description: "Tries to catch the pokemon passed as argument",
 			callback:    commandCatch,
+		},
+		"inspect": {
+			name:        "inspect",
+			description: "Inspect pokemon already caught",
+			callback:    commandInspect,
+		},
+		"pokedex": {
+			name:        "pokedex",
+			description: "Prints out the list of pokemons in the pokedex",
+			callback:    commandPokedex,
 		},
 	}
 }
@@ -65,7 +75,7 @@ func Mainloop() {
 		mapURLB:    "https://pokeapi.co/api/v2/location-area/",
 		commandMap: getCommands(),
 		ch:         pokecache.NewCache(10 * time.Second),
-		pokemons:   map[string]CatchData{},
+		pokedex:    map[string]CatchData{},
 	}
 
 	for {
