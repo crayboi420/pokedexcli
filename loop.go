@@ -19,7 +19,7 @@ type config struct {
 
 type command struct {
 	name, description string
-	callback          func([]string,*config) error
+	callback          func([]string, *config) error
 }
 
 func getCommands() map[string]command {
@@ -44,10 +44,10 @@ func getCommands() map[string]command {
 			description: "Displays the last 20 locations of the map",
 			callback:    commandMapB,
 		},
-		"explore" : {
-			name : "explore",
+		"explore": {
+			name:        "explore",
 			description: "Prints the list of pokemon for the given area name",
-			callback: commandExplore,
+			callback:    commandExplore,
 		},
 	}
 }
@@ -60,27 +60,27 @@ func Mainloop() {
 		commandMap: getCommands(),
 		ch:         pokecache.NewCache(10 * time.Second),
 	}
-	
+
 	for {
 		fmt.Printf("pokedex > ")
-		
+
 		text, ok := reader.ReadString('\n')
 		if ok != nil {
 			fmt.Println("Reading the string failed")
 			break
 		}
-		text = text[:len(text)-1]	//Remove last \n
+		text = text[:len(text)-1] //Remove last \n
 		if len(text) == 0 {
 			continue
 		}
 
-		comm,args, err := Parsetext(text, &cfg)
+		comm, args, err := Parsetext(text, &cfg)
 		if err != nil {
 			fmt.Println(err)
 			continue
 		}
 
-		err = comm.callback(args,&cfg)
+		err = comm.callback(args, &cfg)
 
 		if err != nil {
 			fmt.Println(err)
@@ -89,24 +89,24 @@ func Mainloop() {
 	}
 }
 
-func Parsetext(text string, cfg *config) (command, []string,error) {
+func Parsetext(text string, cfg *config) (command, []string, error) {
 
 	text = strings.ToLower(text)
 	words := strings.Split(text, " ")
 
 	comm, ok := cfg.commandMap[words[0]]
 	args := []string{}
-	if len(words)-1 > 0{
+	if len(words)-1 > 0 {
 		args = words[1:]
 	}
 	if !ok {
-		return command{}, []string{} ,errors.New(words[0]+": not a valid command")
+		return command{}, []string{}, errors.New(words[0] + ": not a valid command")
 	}
 	return comm, args, nil
 }
 
-func commandHelp(args []string,cfg *config) error {
-	if len(args)>0{
+func commandHelp(args []string, cfg *config) error {
+	if len(args) > 0 {
 		return errors.New("-help doesn't accept any arguments")
 	}
 	fmt.Println("\nPokedexCLI is a tool that will function as a pokedex you can use in the command line.")
@@ -117,8 +117,8 @@ func commandHelp(args []string,cfg *config) error {
 	}
 	return nil
 }
-func commandExit(args []string,cfg *config) error {
-	if len(args)>0{
+func commandExit(args []string, cfg *config) error {
+	if len(args) > 0 {
 		return errors.New("-exit doesn't accept any arguments")
 	}
 	os.Exit(0)

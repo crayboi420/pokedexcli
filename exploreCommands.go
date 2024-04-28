@@ -3,7 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
-) 
+)
 
 type PokemonData struct {
 	EncounterMethodRates []struct {
@@ -59,31 +59,31 @@ type PokemonData struct {
 }
 
 func commandExplore(args []string, cfg *config) error {
-	
-	if len(args)!=1 {
+
+	if len(args) != 1 {
 		return errors.New("-explore needs one argument")
 	}
 
 	url := "https://pokeapi.co/api/v2/location-area/"
 	url += args[0]
 
-	pokobj,err := PokemonReader(cfg,url)
+	pokobj, err := PokemonReader(cfg, url)
 
-	if err!=nil {
+	if err != nil {
 		return errors.New("there was an error obtaining the pokemon")
 	}
-	if len(pokobj.PokemonEncounters) == 0{
+	if len(pokobj.PokemonEncounters) == 0 {
 		return errors.New("no pokemon in area/not a valid area")
 	}
-	fmt.Println("Exploring ",args[0]," ...")
+	fmt.Println("Exploring ", args[0], " ...")
 
 	PokemonPrinter(&pokobj)
 
 	return nil
 }
 
-func PokemonPrinter(pocobj *PokemonData){
-	for _,val := range pocobj.PokemonEncounters{
-		fmt.Println("-",val.Pokemon.Name)
+func PokemonPrinter(pocobj *PokemonData) {
+	for _, val := range pocobj.PokemonEncounters {
+		fmt.Println("-", val.Pokemon.Name)
 	}
 }

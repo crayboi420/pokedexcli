@@ -1,11 +1,12 @@
 package main
 
 import (
-	"net/http"
 	"encoding/json"
 	"io"
+	"net/http"
 )
-func urlReader(cfg *config, url string) ([]byte,error){
+
+func urlReader(cfg *config, url string) ([]byte, error) {
 	var data []byte
 
 	if val, is := cfg.ch.Get(url); is {
@@ -21,26 +22,30 @@ func urlReader(cfg *config, url string) ([]byte,error){
 
 		cfg.ch.Add(url, data)
 	}
-	return data,nil
+	return data, nil
 }
 
 func LocationReader(cfg *config, url string) (LocationData, error) {
 
 	locobj := LocationData{}
-	data,err := urlReader(cfg,url)
+	data, err := urlReader(cfg, url)
 
-	if err!=nil {return locobj,err}
-	
+	if err != nil {
+		return locobj, err
+	}
+
 	json.Unmarshal(data, &locobj)
 	return locobj, nil
 }
 
-func PokemonReader(cfg *config, url string) (PokemonData,error){
+func PokemonReader(cfg *config, url string) (PokemonData, error) {
 	pokobj := PokemonData{}
-	data,err := urlReader(cfg,url)
+	data, err := urlReader(cfg, url)
 
-	if err!=nil {return pokobj,err}
+	if err != nil {
+		return pokobj, err
+	}
 
-	json.Unmarshal(data,&pokobj)
-	return pokobj,nil
+	json.Unmarshal(data, &pokobj)
+	return pokobj, nil
 }

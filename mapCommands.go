@@ -16,8 +16,8 @@ type Results struct {
 	URL  string `json:"url"`
 }
 
-func commandMap(args []string,cfg *config) error {
-	if len(args)>0{
+func commandMap(args []string, cfg *config) error {
+	if len(args) > 0 {
 		return errors.New("-map doesn't accept arguments")
 	}
 	url := cfg.mapURLF
@@ -38,8 +38,8 @@ func commandMap(args []string,cfg *config) error {
 }
 
 func commandMapB(args []string, cfg *config) error {
-	
-	if len(args)>0{
+
+	if len(args) > 0 {
 		return errors.New("-mapb doesn't accept arguments")
 	}
 
@@ -59,7 +59,6 @@ func commandMapB(args []string, cfg *config) error {
 
 	return nil
 }
-
 
 func LocationPrinter(locobj *LocationData) {
 
