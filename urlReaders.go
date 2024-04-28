@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	// "fmt"
 	"io"
 	"net/http"
 )
@@ -25,27 +26,13 @@ func urlReader(cfg *config, url string) ([]byte, error) {
 	return data, nil
 }
 
-func LocationReader(cfg *config, url string) (LocationData, error) {
-
-	locobj := LocationData{}
+func ObjReader[T LocationData | ExploreData | CatchData](cfg *config, url string, empty T) (T, error) {
 	data, err := urlReader(cfg, url)
 
 	if err != nil {
-		return locobj, err
+		return empty, err
 	}
 
-	json.Unmarshal(data, &locobj)
-	return locobj, nil
-}
-
-func PokemonReader(cfg *config, url string) (PokemonData, error) {
-	pokobj := PokemonData{}
-	data, err := urlReader(cfg, url)
-
-	if err != nil {
-		return pokobj, err
-	}
-
-	json.Unmarshal(data, &pokobj)
-	return pokobj, nil
+	json.Unmarshal(data, &empty)
+	return empty, nil
 }

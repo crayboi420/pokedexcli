@@ -5,7 +5,7 @@ import (
 	"fmt"
 )
 
-type PokemonData struct {
+type ExploreData struct {
 	EncounterMethodRates []struct {
 		EncounterMethod struct {
 			Name string `json:"name"`
@@ -61,28 +61,28 @@ type PokemonData struct {
 func commandExplore(args []string, cfg *config) error {
 
 	if len(args) != 1 {
-		return errors.New("-explore needs one argument")
+		return errors.New("-explore requires one argument")
 	}
 
 	url := "https://pokeapi.co/api/v2/location-area/"
 	url += args[0]
 
-	pokobj, err := PokemonReader(cfg, url)
+	expobj, err := ObjReader(cfg, url, ExploreData{})
 
 	if err != nil {
 		return errors.New("there was an error obtaining the pokemon")
 	}
-	if len(pokobj.PokemonEncounters) == 0 {
+	if len(expobj.PokemonEncounters) == 0 {
 		return errors.New("no pokemon in area/not a valid area")
 	}
 	fmt.Println("Exploring ", args[0], " ...")
 
-	PokemonPrinter(&pokobj)
+	ExplorePrinter(&expobj)
 
 	return nil
 }
 
-func PokemonPrinter(pocobj *PokemonData) {
+func ExplorePrinter(pocobj *ExploreData) {
 	for _, val := range pocobj.PokemonEncounters {
 		fmt.Println("-", val.Pokemon.Name)
 	}

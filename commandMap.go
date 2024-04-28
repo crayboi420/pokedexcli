@@ -22,7 +22,7 @@ func commandMap(args []string, cfg *config) error {
 	}
 	url := cfg.mapURLF
 
-	locobj, err := LocationReader(cfg, url)
+	locobj, err := ObjReader(cfg, url, LocationData{})
 
 	if err != nil {
 		return errors.New("no locations after this")
@@ -45,7 +45,7 @@ func commandMapB(args []string, cfg *config) error {
 
 	url := cfg.mapURLB
 
-	locobj, err := LocationReader(cfg, url)
+	locobj, err := ObjReader(cfg, url, LocationData{})
 
 	if err != nil {
 		return errors.New("no locations before this")
