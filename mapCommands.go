@@ -1,11 +1,8 @@
 package main
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
-	"io"
-	"net/http"
 )
 
 type LocationData struct {
@@ -19,7 +16,10 @@ type Results struct {
 	URL  string `json:"url"`
 }
 
-func commandMap(cfg *config) error {
+func commandMap(args []string,cfg *config) error {
+	if len(args)>0{
+		return errors.New("-map doesn't accept arguments")
+	}
 	url := cfg.mapURLF
 
 	locobj, err := LocationReader(cfg, url)
@@ -37,7 +37,12 @@ func commandMap(cfg *config) error {
 	return nil
 }
 
-func commandMapB(cfg *config) error {
+func commandMapB(args []string, cfg *config) error {
+	
+	if len(args)>0{
+		return errors.New("-mapb doesn't accept arguments")
+	}
+
 	url := cfg.mapURLB
 
 	locobj, err := LocationReader(cfg, url)
@@ -55,29 +60,6 @@ func commandMapB(cfg *config) error {
 	return nil
 }
 
-func LocationReader(cfg *config, url string) (LocationData, error) {
-
-	locobj := LocationData{}
-	var data []byte
-
-	if val, is := cfg.ch.Get(url); is {
-		data = val
-		// fmt.Println("Got from map")
-	} else {
-		res, err := http.Get(url)
-		if err != nil {
-			return LocationData{}, err
-		}
-		txt, _ := io.ReadAll(res.Body)
-		res.Body.Close()
-		data = []byte(txt)
-
-		cfg.ch.Add(url, data)
-		// fmt.Println("Added to map")
-	}
-	json.Unmarshal(data, &locobj)
-	return locobj, nil
-}
 
 func LocationPrinter(locobj *LocationData) {
 
