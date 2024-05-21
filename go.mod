@@ -1,9 +1,9 @@
-module github.com/crayboi420/pokedexcli 
+module github.com/kanavj/pokedexcli 
 
 go 1.22.2
 
-replace github.com/crayboi420/pokedexcli/internal/pokecache => ./internal/pokecache
+replace github.com/kanavj/pokedexcli/internal/pokecache => ./internal/pokecache
 
 require (
-	github.com/crayboi420/pokedexcli/internal/pokecache v0.0.0
+	github.com/kanavj/pokedexcli/internal/pokecache v0.0.0
 )

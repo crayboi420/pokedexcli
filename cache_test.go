@@ -1,10 +1,11 @@
 package main
 
 import (
+	"fmt"
 	"testing"
 	"time"
-	"fmt"
-	"github.com/crayboi420/pokedexcli/internal/pokecache"
+
+	"github.com/kanavj/pokedexcli/internal/pokecache"
 )
 
 func TestAddGet(t *testing.T) {
